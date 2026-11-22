@@ -1,10 +1,10 @@
 from fastapi.testclient import TestClient
 
-from app.main import app
+from app.main import create_app
 
 
 def test_health_endpoint_returns_ok() -> None:
-    client = TestClient(app)
+    client = TestClient(create_app())
 
     response = client.get("/api/health")
 
