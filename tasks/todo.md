@@ -8,7 +8,7 @@
   - Dependencies: None.
   - Scope: Medium.
 
-- [ ] Task 2: Scaffold the uv-managed FastAPI project.
+- [x] Task 2: Scaffold the uv-managed FastAPI project.
   - Acceptance: FastAPI starts, exposes `/api/health`, uses Pydantic settings, and has a uv lock.
   - Verify: `uv sync --group dev`, `uv run pytest`, `uv run ruff check .`.
   - Dependencies: Task 1.
