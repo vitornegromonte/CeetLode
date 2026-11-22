@@ -2,7 +2,7 @@
 
 ## Phase 1: Development Infrastructure
 
-- [ ] Task 1: Scaffold Docker Compose and application containers.
+- [x] Task 1: Scaffold Docker Compose and application containers.
   - Acceptance: Compose defines frontend, backend, PostgreSQL, and Redis services.
   - Verify: `docker compose config` and `docker compose up --build`.
   - Dependencies: None.
