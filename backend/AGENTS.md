@@ -52,6 +52,7 @@ async def get_exercise(
 ## Database
 
 - Use PostgreSQL as the database.
+- Use Redis only for replaceable draft state. Finalized submissions and progress remain authoritative in PostgreSQL.
 - Use SQLAlchemy models for persistence and Pydantic schemas for API contracts.
 - Define schema changes in Alembic migrations.
 - Use transactions for operations that must complete atomically.

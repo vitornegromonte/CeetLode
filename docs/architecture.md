@@ -10,9 +10,14 @@ The MVP is for one local or self-hosted developer, has no accounts or leaderboar
 
 - The first release is a browser SPA accessed locally or on a private network.
 - The frontend and API are separate applications.
+- Frontend, FastAPI, PostgreSQL, and Redis run through Docker Compose.
 - Data is persisted in PostgreSQL.
 - PostgreSQL is the only database implementation targeted by the MVP.
 - FastAPI exposes the application API and SQLAlchemy/Alembic manage database access and migrations.
+- Redis stores replaceable draft submissions; it is not an authoritative data store.
+- Redis drafts expire after seven days and have their expiry refreshed whenever the draft is saved.
+- Initial curated exercises use Python source code.
+- The initial five-exercise dataset covers two-sum/pair lookup, nested-loop optimization, binary search, stack validation, and sliding window problems.
 - JavaScript is used for React application code; TypeScript is not introduced in the MVP.
 - Reference answers and rubric data are curated by maintainers and can be stored in the repository or database.
 - Python dependencies and virtual environments are managed with uv.
@@ -33,6 +38,7 @@ The MVP is for one local or self-hosted developer, has no accounts or leaderboar
 | Backend framework | FastAPI | Clear Python API structure and automatic OpenAPI documentation |
 | Python environment and dependencies | uv | Reproducible environments and dependency management |
 | Database | PostgreSQL | Strong relational constraints and mature local/self-hosted tooling |
+| Draft cache | Redis | Fast, replaceable storage for draft submissions |
 | Backend ORM | SQLAlchemy 2 | Relational mapping and migration integration |
 | Migrations | Alembic | Reproducible PostgreSQL schema changes |
 | API validation | Pydantic | Request and response validation |
@@ -44,9 +50,8 @@ Browser (React/Vite)
   |  HTTP JSON
   v
 FastAPI
-  |  SQLAlchemy
-  v
-PostgreSQL
+  |-- SQLAlchemy --> PostgreSQL
+  |-- Redis client -> Redis
 ```
 
 The frontend must not access PostgreSQL directly or contain secrets.
@@ -57,14 +62,14 @@ The backend must own exercise, rubric, submission, and progress data. Static pub
 
 The MVP needs these core entities:
 
-- `Exercise`: title, summary, language, source code, difficulty, tags, status, and ordering metadata.
-- `Rubric`: named review expectations associated with an exercise.
-- `ReferenceAnswer`: explanation, complexity analysis, optimization proposal, and implementation notes.
-- `Submission`: the submitted explanation and optimization text for one exercise.
-- `SubmissionRubricMatch`: optional maintainer-curated rubric matches selected or confirmed by the user.
+- `Exercise`: title, summary, Python source code, and difficulty.
+- `Rubric`: 3-6 ordered checklist items, each with a title and expected observation.
+- `ReferenceAnswer`: explanation and optimization proposal.
+- `Submission`: the submitted explanation and optimization text for one exercise attempt.
+- `SubmissionRubricMatch`: user-selected rubric items covered by a finalized submission.
 - `Progress`: exercise completion status and timestamps derived from submissions.
 
-Submission fields must be immutable once explicitly finalized, or the API must retain submission history. Saving a draft is allowed; saving a final submission must create a new submission record.
+Submission fields are immutable after finalization. Every finalized attempt is retained as a separate PostgreSQL submission record. Draft fields are stored in Redis and may be overwritten. Saving a final submission creates a new immutable PostgreSQL submission record and invalidates the matching Redis draft.
 
 ## API Responsibilities
 
@@ -88,6 +93,7 @@ GET    /api/exercises/{exercise_id}
 GET    /api/exercises/{exercise_id}/rubrics
 GET    /api/exercises/{exercise_id}/draft
 PUT    /api/exercises/{exercise_id}/draft
+DELETE /api/exercises/{exercise_id}/draft
 POST   /api/exercises/{exercise_id}/submissions
 GET    /api/submissions/{submission_id}
 GET    /api/submissions/{submission_id}/reference-answer
@@ -179,7 +185,16 @@ bun run test
 bun run test:e2e
 ```
 
-PostgreSQL can be provided locally with Docker Compose or a host-installed server. The MVP must document the selected local setup before implementation.
+The complete development stack runs through Docker Compose. Planned services are `frontend`, `backend`, `postgres`, and `redis`.
+
+```bash
+docker compose up --build
+docker compose down
+docker compose down -v
+docker compose ps
+```
+
+Frontend and backend source directories are bind-mounted for development. PostgreSQL and Redis use named volumes for persistence or controlled reset.
 
 ## Testing Strategy
 
@@ -233,8 +248,10 @@ Responsive UI verification at 320px, 768px, 1024px, and 1440px is required.
 ## Success Criteria
 
 - A user can browse and open a curated exercise.
+- The MVP ships with five curated Python exercises.
 - A user can save and restore a draft for an exercise.
 - A user must provide both an explanation and an optimization proposal before final submission.
+- Final submissions reject drafts unless both text fields contain at least 20 non-whitespace characters.
 - A final submission prevents silent mutation of its saved text.
 - After submission, the user can view the rubric and reference answer.
 - Progress reflects finalized submissions and survives backend restarts.
@@ -243,8 +260,3 @@ Responsive UI verification at 320px, 768px, 1024px, and 1440px is required.
 - Core frontend flows pass component and browser tests.
 
 ## Open Questions
-
-- Docker Compose versus a host PostgreSQL installation for local development.
-- Whether drafts should be exclusive to one device or expose the API for future multi-device use.
-- Which exercise languages and language-specific CodeMirror modules are in the initial dataset.
-- Whether Rubric matches are user-selected, automatically curated, or omitted from the MVP.

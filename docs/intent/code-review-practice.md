@@ -17,7 +17,7 @@ The primary user is a developer practicing code analysis and optimization.
 
 ## MVP Constraints
 
-- The app should run locally with an account-free FastAPI API and PostgreSQL database.
+- The app should run locally through Docker Compose with account-free FastAPI, PostgreSQL, Redis, and React services.
 - Evaluation should use curated rubrics and revealable reference answers.
 - The MVP should require both an explanation and an optimization proposal.
 

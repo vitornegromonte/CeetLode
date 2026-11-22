@@ -7,6 +7,8 @@
 - Keep backend implementation in `backend/` and frontend implementation in `frontend/`.
 - Read the matching `AGENTS.md` before editing source in each application.
 - Use `uv` for Python dependencies and commands; use `bun` for frontend dependencies and scripts.
+- Run the frontend, backend, PostgreSQL, and Redis services with Docker Compose.
+- Store only replaceable drafts in Redis; store exercises, submissions, rubrics, answers, and progress in PostgreSQL.
 - Preserve property-based test coverage at domain and pure-helper boundaries.
 
 ## Working Agreements
