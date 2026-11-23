@@ -20,7 +20,7 @@
   - Dependencies: Task 1.
   - Scope: Medium.
 
-- [ ] Task 4: Configure PostgreSQL and Redis services and health checks.
+- [x] Task 4: Configure PostgreSQL and Redis services and health checks.
   - Acceptance: Both services are persistent, reachable by container names, and health-checked.
   - Verify: `docker compose ps` and service health checks.
   - Dependencies: Task 1.
