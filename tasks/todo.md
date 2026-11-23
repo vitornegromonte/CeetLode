@@ -26,7 +26,7 @@
   - Dependencies: Task 1.
   - Scope: Small.
 
-- [ ] Task 5: Establish database settings, Alembic, and test configuration.
+- [x] Task 5: Establish database settings, Alembic, and test configuration.
   - Acceptance: Backend has async settings, SQLAlchemy session setup, Alembic, and isolated test configuration.
   - Verify: Migration upgrade/downgrade smoke test.
   - Dependencies: Tasks 1 and 2.
@@ -34,10 +34,10 @@
 
 ## Checkpoint: Infrastructure
 
-- [ ] `docker compose up --build` starts all four services.
-- [ ] Frontend loads through Docker.
-- [ ] FastAPI health endpoint succeeds.
-- [ ] PostgreSQL and Redis pass readiness checks.
+- [x] `docker compose up --build` starts all four services.
+- [x] Frontend loads through Docker.
+- [x] FastAPI health endpoint succeeds.
+- [x] PostgreSQL and Redis pass readiness checks.
 
 ## Phase 2: Core Data and API
 
