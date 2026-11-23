@@ -14,7 +14,7 @@
   - Dependencies: Task 1.
   - Scope: Medium.
 
-- [ ] Task 3: Scaffold the Bun-managed React/Vite project.
+- [x] Task 3: Scaffold the Bun-managed React/Vite project.
   - Acceptance: React/Vite starts, uses JavaScript, and includes the approved dependencies.
   - Verify: `bun install`, `bun run build`, `bun run lint`, `bun run test`.
   - Dependencies: Task 1.
